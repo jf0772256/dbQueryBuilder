@@ -299,6 +299,24 @@
 			return $this;
 		}
 		
+		/**
+		 * Takes raw query and params and overwrites the values to force the query to run, note please use the params to bind values rather than include them directly as part of the query
+		 * @param string     $rawQuery SQL query string
+		 * @param array|null $params Parameters array to bind to the raw sql statement - you should always bind values provided in a query to make sure to reduce the chance of injection
+		 *
+		 * @return $this dialog object to be run build on
+		 */
+		public function raw(string $rawQuery, ?array $params = []): self
+		{
+			$this->query = $rawQuery;
+			if ($params !== [])
+			{
+				$this->hasParams = true;
+				$this->bindableValues = $params;
+			}
+			return $this;
+		}
+		
 		public function getQuery(): string
 		{
 			$x = $this->query;
