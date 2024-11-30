@@ -12,6 +12,16 @@
 		public bool $returnsData;
 		public bool $hasParams;
 		private array $bindableValues = [];
+		
+		/**
+		 * check if the query holds the key word 'WHERE' cause i dont want to copy pasta the code to check all over the place
+		 * @return bool true if found false is not
+		 */
+		private function checkWhere() : bool
+		{
+			return str_contains($this->query, 'WHERE');
+		}
+		
 		public function createTable(string $table) : self
 		{
 			$this->createNewTable = true;
