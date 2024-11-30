@@ -12,13 +12,19 @@
 		}
 		public function primaryKey() : self
 		{
-			$this->integer('id')->autoIncrement()->notNull();
+			$this->pkInteger('id');
+			$this->query = rtrim($this->query, ',');
 			$this->query .= ' PRIMARY KEY';
 			return $this;
 		}
 		public function primary() : self
 		{
 			return $this->primaryKey();
+		}
+		public function pkInteger(string $name) : self
+		{
+			$this->query .= " {$name} INTEGER,";
+			return $this;
 		}
 		/**
 		 * Run createTimeStampUpdateTrigger(string tableName) after table generation when doing this with sqlite
