@@ -90,6 +90,10 @@
 			$this->bindableValues = [];
 			$this->query = "SELECT ";
 			foreach ($columns as $column) {
+				if ($column == '*') {
+					$this->query .= "{$column},";
+					continue;
+				}
 				$this->query .= "`{$column}`,";
 			}
 			$this->query .= rtrim($this->query, ",") . " FROM `{$table}`";
