@@ -4,7 +4,7 @@
 	
 	class SQLiteDialect extends Dialect
 	{
-		public boolean $usedTimestamps;
+		public bool $usedTimestamps;
 		public function autoIncrement() : self
 		{
 			$this->query .= ' AUTOINCREMENT';
@@ -15,6 +15,7 @@
 			$this->pkInteger('id');
 			$this->query = rtrim($this->query, ',');
 			$this->query .= ' PRIMARY KEY';
+			$this->autoIncrement()->notNull();
 			return $this;
 		}
 		public function primary() : self
@@ -31,9 +32,9 @@
 		 */
 		public function addTimestamps(): self
 		{
-			$usedTimestamps = true;
-			$this->query .= $this->dateTime('created_at')->notNull()->defaults('CURRENT_TIMESTAMP');
-			$this->query .= $this->dateTime('updated_at')->defaults('NULL');
+			$this->usedTimestamps = true;
+			$this->dateTime('created_at')->notNull()->defaults('CURRENT_TIMESTAMP');
+			$this->dateTime('updated_at')->defaults('NULL');
 			return $this;
 		}
 		
@@ -46,7 +47,7 @@
 				FOR EACH ROW
 				WHEN new.updated_at = old.updated_at
 				BEGIN
-					UPDATE {$tn} SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id
+					UPDATE {$tn} SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
 				END";
 			return $query;
 		}
@@ -54,7 +55,7 @@
 		{
 			$query = "";
 			$tn = $this->tableName;
-			$query = "DROP TRIGGER IF NOT EXISTS {$tn}_update_timestamp_trigger";
+			$query = "DROP TRIGGER IF EXISTS {$tn}_update_timestamp_trigger";
 			return $query;
 		}
 	}

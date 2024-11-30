@@ -31,7 +31,7 @@
 					$this->dialect = new SQLiteDialect();
 					break;
 				default:
-					throw new Exception("Unsupported db dialect");
+					throw new Exception("Unsupported db dialect", 5000);
 			}
 		}
 		
@@ -53,10 +53,19 @@
 		public function build(Dialect $dialect): Builder|PDOStatement
 		{
 			$query = $dialect->getQuery();
+			//echo "<pre>";
+			//print_r(["dialect" => $dialect, "query" => $query]);
+			//echo "</pre>";
+			//die();
 			$data = $dialect->hasParams ? static::$connection->ExecuteQuery($query, $dialect->getSavedParams()) : static::$connection->ExecuteQuery($query);
 			if (!($dialect instanceof MySQLDialect) && $dialect->createNewTable && $dialect->usedTimestamps)
 			{
-				static::$connection->ExecuteQuery($dialect->createTrigger());
+				$query = $dialect->createTrigger();
+				//echo "<pre>";
+				//print_r($query);
+				//echo "</pre>";
+				//die();
+				static::$connection->ExecuteQuery($query, $dialect->getSavedParams());
 			}
 			
 			return $dialect->returnsData ? $data : $this;
