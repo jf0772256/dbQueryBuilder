@@ -96,7 +96,7 @@
 				}
 				$this->query .= "`{$column}`,";
 			}
-			$this->query .= rtrim($this->query, ",") . " FROM `{$table}`";
+			$this->query = rtrim($this->query, ",") . " FROM `{$table}`";
 			return $this;
 		}
 		public function insert(string $table, array $columnsAndValues) : self {
@@ -110,7 +110,7 @@
 				$this->query .= "`{$column}`,";
 				$this->bindableValues[] = $value;
 			}
-			$this->query .= rtrim($this->query, ",") . " VALUES (";
+			$this->query = rtrim($this->query, ",") . ") VALUES (";
 			foreach ($columnsAndValues as $column => $value)
 			{
 				$this->query .= "?,";
@@ -144,7 +144,7 @@
 		{
 			$this->bindableValues[] = $value;
 			$this->hasParams = true;
-			if (!str_ends_with($this->query, "WHERE")) { $this->query .= " WHERE"; }
+			if (!$this->checkWhere()) { $this->query .= " WHERE"; }
 			$this->query .= " `{$column}` {$operator} ?";
 			return $this;
 		}
@@ -165,8 +165,8 @@
 			$this->hasParams = true;
 			$this->bindableValues[] = $start;
 			$this->bindableValues[] = $end;
-			if (!str_ends_with($this->query, "WHERE")) { $this->query .= " WHERE"; }
-			$this->query .= " `{$column}` BETWEEN '{$start}' AND '{$end}`";
+			if (!$this->checkWhere()) { $this->query .= " WHERE"; }
+			$this->query .= " `{$column}` BETWEEN ? AND ?";
 			return $this;
 		}
 		public function orBetween(string $column, string $start, string $end) : self
@@ -185,6 +185,7 @@
 		{
 			$this->bindableValues[] = "%{$value}%";
 			$this->hasParams = true;
+			if (!$this->checkWhere()) { $this->query .= " WHERE"; }
 			$this->query .= " `{$column}` LIKE ?";
 			return $this;
 		}
@@ -231,7 +232,8 @@
 		}
 		public function boolean(string $name): self
 		{
-			return $this->tinyInteger($name, 1);
+			$this->tinyInteger($name, 1);
+			return $this;
 		}
 		public function decimal(string $name, ?int $length = 10, ?int $decimals = 2): self
 		{
@@ -276,8 +278,8 @@
 		
 		public function addTimestamps(): self
 		{
-			$this->query .= $this->dateTime('created_at')->notNull()->defaults('CURRENT_TIMESTAMP');
-			$this->query .= $this->dateTime('updated_at')->defaults('NULL');
+			$this->dateTime('created_at')->notNull()->defaults('CURRENT_TIMESTAMP');
+			$this->dateTime('updated_at')->defaults('NULL');
 			return $this;
 		}
 		
@@ -293,12 +295,13 @@
 		 *
 		 * @throws Exception $default must not be empty value or actual null. May be 'NULL' but not null or ''
 		 */
-		public function defaults(mixed $default) : self
+		public function defaults(mixed $default = null) : self
 		{
 			if ($default === null || is_string($default) && strlen($default) === 0) { throw new Exception("default value is null, but shouldn't be empty"); }
 			$this->query = rtrim($this->query, ",");
 			if ($default) { $this->query .= " DEFAULT {$default},"; }
 			if (!$default) { $this->query .= " DEFAULT NULL,"; }
+			return $this;
 		}
 		public function unsigned(): self
 		{
@@ -309,7 +312,7 @@
 		public function notNull(): self
 		{
 			$this->query = rtrim($this->query, ",");
-			$this->query .= " NOT NULL";
+			$this->query .= " NOT NULL,";
 			return $this;
 		}
 		
@@ -333,7 +336,11 @@
 		
 		public function getQuery(): string
 		{
-			$x = $this->query;
+			if ($this->createNewTable) // if create new table is used we need to terminate the query with a ) . this should do that
+			{
+				$this->query = rtrim($this->query, ",") . " )";
+			}
+			$x = rtrim($this->query, ',');
 			$this->query = "";
 			return $x;
 		}
