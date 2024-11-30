@@ -58,6 +58,10 @@
 		{
 			try
 			{
+				//echo '<pre>';
+				//print_r([$this->buildDSN(), $this->connectionType, $this->type]);
+				//echo '</pre>';
+				//die();
 				// create connection using pdo
 				$this->connection = new PDO($this->buildDSN(), $this->user, $this->pass, $this->pdoOptions);
 				$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
