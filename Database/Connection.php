@@ -3,7 +3,6 @@
 	namespace Jesse\SimplifiedMVC\Database\Database;
 	
 	use AllowDynamicProperties;
-	use Jesse\SimplifiedMVC\Database\Database\DatabaseBase;
 	use PDO;
 	use PDOStatement;
 	
@@ -58,10 +57,6 @@
 		{
 			try
 			{
-				//echo '<pre>';
-				//print_r([$this->buildDSN(), $this->connectionType, $this->type]);
-				//echo '</pre>';
-				//die();
 				// create connection using pdo
 				$this->connection = new PDO($this->buildDSN(), $this->user, $this->pass, $this->pdoOptions);
 				$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -81,7 +76,8 @@
 			if ($this->type === "sqlite")
 			{
 				return "{$this->type}:{$this->name}";
-			} else
+			}
+			else
 			{
 				return "{$this->type}:host={$this->host};port={$this->port};dbname={$this->name}";
 			}
