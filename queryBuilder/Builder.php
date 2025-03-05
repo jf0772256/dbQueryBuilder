@@ -53,18 +53,10 @@
 		public function build(Dialect $dialect): Builder|PDOStatement
 		{
 			$query = $dialect->getQuery();
-			//echo "<pre>";
-			//print_r(["dialect" => $dialect, "query" => $query]);
-			//echo "</pre>";
-			//die();
 			$data = $dialect->hasParams ? static::$connection->ExecuteQuery($query, $dialect->getSavedParams()) : static::$connection->ExecuteQuery($query);
 			if (!($dialect instanceof MySQLDialect) && $dialect->createNewTable && $dialect->usedTimestamps)
 			{
 				$query = $dialect->createTrigger();
-				//echo "<pre>";
-				//print_r($query);
-				//echo "</pre>";
-				//die();
 				static::$connection->ExecuteQuery($query, $dialect->getSavedParams());
 			}
 			
