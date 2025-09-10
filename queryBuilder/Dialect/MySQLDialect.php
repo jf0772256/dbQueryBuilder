@@ -27,8 +27,8 @@
 		public function addTimestamps(): self
 		{
 			
-			$this->dateTime('created_at')->notNull()->defaults('CURRENT_TIMESTAMP');
-			$this->dateTime('updated_at')->defaults('NULL ON UPDATE CURRENT_TIMESTAMP');
+			$this->dateTime('created_at')->notNull()->defaults('UTC_TIMESTAMP');
+			$this->dateTime('updated_at')->defaults('NULL ON UPDATE UTC_TIMESTAMP');
 			return $this;
 		}
 		
