@@ -326,7 +326,7 @@
 		public function raw(string $rawQuery, ?array $params = []): self
 		{
 			$this->query = $rawQuery;
-			if ($params !== [])
+			if (!empty($params))
 			{
 				$this->hasParams = true;
 				$this->bindableValues = $params;
@@ -342,6 +342,7 @@
 			}
 			$x = rtrim($this->query, ',');
 			$this->query = "";
+			$this->createNewTable = false;
 			return $x;
 		}
 		public function getSavedParams(): array
