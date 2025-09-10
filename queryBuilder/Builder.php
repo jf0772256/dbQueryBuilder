@@ -7,6 +7,7 @@
 	use Jesse\SimplifiedMVC\Database\queryBuilder\Dialect\Dialect;
 	use Jesse\SimplifiedMVC\Database\queryBuilder\Dialect\MySQLDialect;
 	use Jesse\SimplifiedMVC\Database\queryBuilder\Dialect\SQLiteDialect;
+	use Jesse\SimplifiedMVC\Database\queryBuilder\Dialect\SQLServerDialect;
 	use PDOStatement;
 	
 	class Builder
@@ -29,6 +30,10 @@
 					break;
 				case 'sqlite':
 					$this->dialect = new SQLiteDialect();
+					break;
+				case 'sqlsrv':
+				case 'odbc':
+					$this->dialect = new SQLServerDialect();
 					break;
 				default:
 					throw new Exception("Unsupported db dialect", 5000);
