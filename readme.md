@@ -45,7 +45,8 @@ This is a required repo of the Simple MVC project. It is not required that you u
         ->andWhere('active', '=', 1)
     );
 ```
-Options for dialects are currently mysql and sqlite
+Options for dialects are currently mysql, sqlite, and sqlserver.
+
 
 For inserts the values are [\$key => \$value] pairs, with \$key being the column name, and \$value is the value to insert.
 
