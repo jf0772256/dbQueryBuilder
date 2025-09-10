@@ -78,12 +78,27 @@
 		 */
 		private function buildDSN (): string
 		{
-			if ($this->type === "sqlite")
-			{
-				return "{$this->type}:{$this->name}";
-			} else
-			{
-				return "{$this->type}:host={$this->host};port={$this->port};dbname={$this->name}";
+			switch ($this->connectionType) {
+				case "sqlite":
+					return "{$this->type}:{$this->name}";
+					break;
+				case "mysql":
+					return "mysql:host={$this->host};port={$this->port};dbname={$this->name}";
+					break;
+				case "sqlsvr":
+					return "sqlsvr:Server={$this->host},{$this->port};Database={$this->name}";
+					break;
+				case "odbc":
+					// Uses ODBC connection settings to configure DSN connections for ODBC. These are named connections, and so the .env* should set the host to use teh name in the odbc.ini or the windows odbc connection manager.
+					// ** NOTE ** this expects to use MS SQL server and as such will use the sqlserver dialect.
+					return "odbc:{$this->host}";
+					break;
+				case "oracle":
+					return "oci:dbname={$this->host}:{$this->port}/{$this->name};charset={$this->charset}";
+					break;
+				default:
+					throw new DatabaseBaseConnectionError("Unsupported database type '{$this->connectionType}'");
+					die();
 			}
 		}
 	}

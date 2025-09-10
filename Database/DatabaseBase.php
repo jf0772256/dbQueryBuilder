@@ -45,11 +45,24 @@
 		 */
 		private string $port = '3306';
 		/**
-		 * Database type, used only with PDO connection
-		 * @var string $type
+		 * Database type.
+		 *
+		 * mysql = for mysql like databases for instance mariadb
+		 *
+		 * sqlite = is sqlite
+		 *
+		 * sqlsrv = MS SQL Server on Windows
+		 *
+		 * odbc = MS SQL Server on Linux/Unix and other databases that can connect using odbc
+		 *
+		 * @var string $type values can be 'mysql', 'sqlite', 'sqlsrv', 'odbc', and 'oracle'
 		 * @author Jesse Fender
 		 */
-		private string $type = 'pdo';
+		private string $type = 'mysql';
+		/**
+		 * @var string $charset Used for Oracle DB DSN connections. Defaults to AL32UTF8 char set which is Oracle DB default char set
+		 */
+		private string $charset = 'AL32UTF8';
 		/**
 		 * PDO Connection options array, currently sets default returns as assoc arrays, can change or add other properties. Only use dby the PDODatabase
 		 * @var array $pdoOptions
